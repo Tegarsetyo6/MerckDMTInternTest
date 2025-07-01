@@ -1,0 +1,15 @@
+-- Kedua data sudah diimport dalam bentuk data tabel dengan nama sales_data dan product_code
+select * from sales_data; 
+select * from product_code;
+
+-- SQL Query untuk menampilkan data pada data sales dengan tambahan harga jual dari tabel product_code dan kolom total sales
+SELECT 
+  s.*,
+  p.harga_jual,
+-- Dilakukan normalisasi bentuk data untuk harga jual karena data masih dalam bentuk teks dan terdapat koma
+-- Improvement Note saat import data bentuk datanya seharusnya sudah dalam bentuk number
+  (s.amount * CAST(REPLACE(p.harga_jual, ',', '') AS UNSIGNED)) AS total_sales 
+FROM sales_data s
+LEFT JOIN product_code p
+-- Dilakukan normalisasi bentuk data karena saat dilakukan match join tidak ditemukan data yang cocok dari product_code ke sales_data
+  ON REPLACE(s.product_code, '.', '') = REPLACE(p.product_code, '.', '');
